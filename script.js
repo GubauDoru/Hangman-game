@@ -4,7 +4,13 @@ const keyboardIds = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
 
 function startGame(player2Word) {
 	for (let i = 0; i <= 25; ++i) {
-		document.getElementById(keyboardIds[i]).disabled = false;
+		const buttons = document.createElement('button');
+		buttons.textContent = keyboardIds[i].toUpperCase();
+		buttons.setAttribute('value', keyboardIds[i].toUpperCase());
+		buttons.setAttribute('id', keyboardIds[i]);
+		buttons.setAttribute('class', 'letButtons');
+		buttons.onclick = function() {checkLetters(keyboardIds[i].toUpperCase());};
+		document.getElementById('keyboard').appendChild(buttons);
 	}
 	document.getElementById('startButton').disabled = true;
 	document.getElementById('adaugaButton').disabled = true;
@@ -16,8 +22,7 @@ function startGame(player2Word) {
 		let word = player2Word;
 		chusenWord = word.toUpperCase();
 	}
-	window.wordLength = chusenWord.length;//---------> pot sa scap de asta daca o introduc direct in for
-	for (i = 0; i < wordLength; ++i) {
+	for (i = 0; i < chusenWord.length; ++i) {
 		const wordLetters = document.createElement('p');
 		wordLetters.setAttribute('id', i);
 		wordLetters.textContent = '__';
@@ -31,7 +36,7 @@ function checkLetters(letter) {
 	if (chusenWord.indexOf(letter) < 0) {
 		showHangMan();
 	}
-	for(let i = 0; i < wordLength; ++i) {
+	for(let i = 0; i < chusenWord.length; ++i) {
 		if (chusenWord[i] === letter) {
 			showLetters(i);
 		}
@@ -41,15 +46,14 @@ function checkLetters(letter) {
 function showLetters(i) {
 	document.getElementById(i).innerHTML = ' ' + chusenWord[i] + ' ';
 	let checkWord = 0;
-	for(let i = 0; i < wordLength; ++i) {
+	for(let i = 0; i < chusenWord.length; ++i) {
 		if (document.getElementById(i).textContent === '__') {
 			checkWord = 1;
 			break;
 		}
 	}
 	if (checkWord === 0) {
-		const modal = document.getElementById('myModal');
-		modal.style.display = 'block';
+		gameOver();
 	}
 }
 
@@ -60,10 +64,14 @@ function showHangMan() {
 	hangManImages.src = bodyParts;
 	document.getElementById('gameTable').appendChild(hangManImages);
 	if (memberNumber === 7) {
-		const modal = document.getElementById('myModal');
-		modal.style.display = 'block';
+		gameOver();
 	}
 		++memberNumber;
+}
+
+function gameOver() {
+	const modal = document.getElementById('myModal');
+	modal.style.display = 'block';
 }
 
 function restartGame() {
